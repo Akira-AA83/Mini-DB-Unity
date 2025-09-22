@@ -47,7 +47,8 @@ namespace MiniDB.Unity.SQL
             playerId = System.Guid.NewGuid().ToString();
             playerName = "Player_" + UnityEngine.Random.Range(1000, 9999);
             
-            Debug.Log($"[MiniDBSQL] 🎮 Generated unique player: {playerName} (ID: {playerId})");
+            if (enableDebugLogs)
+                Debug.Log($"[MiniDBSQL] Generated unique player: {playerName} (ID: {playerId})");
         }
         
         public async Task<bool> ConnectAsync()
@@ -236,9 +237,8 @@ namespace MiniDB.Unity.SQL
         
         public async Task<string> ExecuteQueryAsync(string query)
         {
-            // 🔍 DEBUG: Log all queries passing through this method
             if (enableDebugLogs)
-                Debug.Log($"[MiniDBSQL] 🎯 ExecuteQueryAsync called with: '{query}' (length: {query?.Length ?? -1})");
+                Debug.Log($"[MiniDBSQL] ExecuteQueryAsync: {query}");
             
             return await SendQueryAndWait(query);
         }
@@ -251,15 +251,15 @@ namespace MiniDB.Unity.SQL
             try
             {
                 if (enableDebugLogs)
-                    Debug.Log($"[MiniDBSQL] 📡 Sending SUBSCRIBE command for table: {tableName}");
+                    Debug.Log($"[MiniDBSQL] Subscribing to table: {tableName}");
                 
                 string response = await ExecuteQueryAsync($"SUBSCRIBE {tableName}");
                 
                 if (enableDebugLogs)
                     Debug.Log($"[MiniDBSQL] Subscription response: {response}");
                 
-                // Check for ACK in the response (server sends ACK: SUBSCRIBE format)
-                bool success = response.Contains("ACK: SUBSCRIBE") || response.Contains("iscritto alla tabella");
+                // Check for ACK in the response
+                bool success = response.Contains("ACK: SUBSCRIBE") || response.Contains("subscribed to table");
                 
                 if (enableDebugLogs)
                     Debug.Log($"[MiniDBSQL] Subscription {(success ? "SUCCESS" : "FAILED")} for table {tableName}");
@@ -306,21 +306,15 @@ namespace MiniDB.Unity.SQL
             
             try
             {
-                // 🔍 DEBUG: Intercept empty queries BEFORE sending them
+                // Validate query before sending
                 if (string.IsNullOrEmpty(query) || query.Trim().Length == 0)
                 {
-                    Debug.LogError($"[MiniDBSQL] 🚨 EMPTY QUERY DETECTED!");
-                    Debug.LogError($"[MiniDBSQL] - Query string: '{query}'");
-                    Debug.LogError($"[MiniDBSQL] - Query length: {query?.Length ?? -1}");
-                    Debug.LogError($"[MiniDBSQL] - Query bytes: {(query != null ? string.Join(",", Encoding.UTF8.GetBytes(query)) : "NULL")}");
-                    Debug.LogError($"[MiniDBSQL] - Stack trace: {System.Environment.StackTrace}");
-                    
-                    // Don't send empty queries to avoid server log noise
+                    Debug.LogError($"[MiniDBSQL] Empty query detected");
                     return "ERROR: Empty query intercepted by client";
                 }
                 
                 if (enableDebugLogs)
-                    Debug.Log($"[MiniDBSQL] 🔒 Query acquired semaphore: {query}");
+                    Debug.Log($"[MiniDBSQL] Executing query: {query}");
                 
                 // Send query directly without ID prefix (MiniDB server expects pure SQL)
                 var queryBytes = Encoding.UTF8.GetBytes(query);
@@ -342,7 +336,7 @@ namespace MiniDB.Unity.SQL
                     {
                         var result = await tcs.Task;
                         if (enableDebugLogs)
-                            Debug.Log($"[MiniDBSQL] 🔓 Query completed, releasing semaphore: {query}");
+                            Debug.Log($"[MiniDBSQL] Query completed");
                         return result;
                     }
                     else
@@ -378,7 +372,7 @@ namespace MiniDB.Unity.SQL
                         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                         
                         if (enableDebugLogs)
-                            Debug.Log("[MiniDBSQL] 📥 RAW RECEIVED: " + message);
+                            Debug.Log("[MiniDBSQL] Received: " + message);
                         
                         // Process the response
                         ProcessResponse(message);
@@ -405,7 +399,7 @@ namespace MiniDB.Unity.SQL
             try
             {
                 if (enableDebugLogs)
-                    Debug.Log($"[MiniDBSQL] 🔍 ProcessResponse called with: {response}");
+                    Debug.Log($"[MiniDBSQL] Processing response: {response}");
 
                 // Skip welcome messages
                 if (response.Contains("\"type\":\"welcome\"") || response.Contains("Welcome to Mini-DB"))
@@ -434,7 +428,7 @@ namespace MiniDB.Unity.SQL
                 if (latestResponse != null)
                 {
                     if (enableDebugLogs)
-                        Debug.Log($"[MiniDBSQL] 🔄 Handling as query response");
+                        Debug.Log($"[MiniDBSQL] Handling query response");
                     latestResponse.TrySetResult(response);
                     latestResponse = null;
                     return;
@@ -444,7 +438,7 @@ namespace MiniDB.Unity.SQL
                 if (response.Contains("\"table\":") && (response.Contains("\"notification\":") || response.Contains("\"type\":\"table_notification\"")))
                 {
                     if (enableDebugLogs)
-                        Debug.Log($"[MiniDBSQL] 📡 Table notification: {response}");
+                        Debug.Log($"[MiniDBSQL] Table notification: {response}");
                     
                     OnTableNotification?.Invoke(response);
                     return;
@@ -454,25 +448,25 @@ namespace MiniDB.Unity.SQL
                 if (response.Contains("\"session_id\":") && response.Contains("\"game_status\":"))
                 {
                     if (enableDebugLogs)
-                        Debug.Log($"[MiniDBSQL] 📡 Modular game notification detected: {response}");
+                        Debug.Log($"[MiniDBSQL] Game notification: {response}");
                     
                     OnTableNotification?.Invoke(response);
                     return;
                 }
                 
-                // Handle any other game-related notifications that might contain board_state, player_x, player_o
+                // Handle game-related notifications
                 if (response.Contains("\"board_state\":") || (response.Contains("\"player_x\":") && response.Contains("\"player_o\":")))
                 {
                     if (enableDebugLogs)
-                        Debug.Log($"[MiniDBSQL] 📡 Game-related notification detected: {response}");
+                        Debug.Log($"[MiniDBSQL] Game notification: {response}");
                     
                     OnTableNotification?.Invoke(response);
                     return;
                 }
                 
-                // For other messages (broadcasts, etc.)
+                // Other messages (broadcasts, etc.)
                 if (enableDebugLogs)
-                    Debug.Log("[MiniDBSQL] 🔔 Broadcast/notification: " + response);
+                    Debug.Log("[MiniDBSQL] Broadcast: " + response);
             }
             catch (Exception ex)
             {

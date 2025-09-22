@@ -192,18 +192,18 @@ namespace MiniDB.Unity.Examples.TicTacToe
                 if (subscribed)
                 {
                     if (enableDebugLogs)
-                        Debug.Log("[TicTacToe] ✅ Successfully subscribed to real-time game updates");
+                        Debug.Log("[TicTacToe] Successfully subscribed to real-time game updates");
                 }
                 else
                 {
                     if (enableDebugLogs)
-                        Debug.LogError("[TicTacToe] ❌ Failed to subscribe to game updates");
+                        Debug.LogError("[TicTacToe] Failed to subscribe to game updates");
                 }
             }
             catch (Exception ex)
             {
                 if (enableDebugLogs)
-                    Debug.LogError($"[TicTacToe] ❌ Subscription error: {ex.Message}");
+                    Debug.LogError($"[TicTacToe] Subscription error: {ex.Message}");
             }
         }
         
@@ -306,19 +306,12 @@ namespace MiniDB.Unity.Examples.TicTacToe
         public async Task<bool> MakeMove(int cellPosition)
         {
             if (enableDebugLogs)
-            {
-                Debug.Log($"[TicTacToe] 🖱️ MakeMove called for cell {cellPosition}");
-                Debug.Log($"[TicTacToe] - isGameActive: {isGameActive}");
-                Debug.Log($"[TicTacToe] - isMyTurn: {isMyTurn}");
-                Debug.Log($"[TicTacToe] - cellPosition valid: {cellPosition >= 0 && cellPosition < 9}");
-                if (cellPosition >= 0 && cellPosition < 9)
-                    Debug.Log($"[TicTacToe] - cell empty: {string.IsNullOrEmpty(gameState.board[cellPosition])}");
-            }
+                Debug.Log($"[TicTacToe] MakeMove: cell {cellPosition}, active: {isGameActive}, turn: {isMyTurn}");
             
             if (!isGameActive || !isMyTurn || cellPosition < 0 || cellPosition >= 9)
             {
                 if (enableDebugLogs)
-                    Debug.Log($"[TicTacToe] ❌ MakeMove blocked - not allowed");
+                    Debug.Log($"[TicTacToe] MakeMove blocked - not allowed");
                 return false;
             }
             
@@ -392,7 +385,7 @@ namespace MiniDB.Unity.Examples.TicTacToe
             if (isLoadingGameState)
             {
                 if (enableDebugLogs)
-                    Debug.Log("[TicTacToe] ⏸️ LoadGameState already in progress, skipping...");
+                    Debug.Log("[TicTacToe] LoadGameState already in progress, skipping");
                 return;
             }
             
@@ -459,19 +452,7 @@ namespace MiniDB.Unity.Examples.TicTacToe
                               (gameState.currentTurn == "O" && playerSymbol == TicTacToePlayerSymbol.O);
                     
                     if (enableDebugLogs)
-                    {
-                        Debug.Log($"[TicTacToe] 🔄 LoadGameState updated:");
-                        Debug.Log($"[TicTacToe] - Game Status: {gameState.gameStatus}");
-                        Debug.Log($"[TicTacToe] - Current Turn: {gameState.currentTurn}");
-                        Debug.Log($"[TicTacToe] - Player Symbol: {playerSymbol}");
-                        Debug.Log($"[TicTacToe] - isGameActive: {wasGameActive} → {isGameActive}");
-                        Debug.Log($"[TicTacToe] - isMyTurn: {wasMyTurn} → {isMyTurn}");
-                        Debug.Log($"[TicTacToe] - PlayerX: {gameState.playerX}");
-                        Debug.Log($"[TicTacToe] - PlayerO: {gameState.playerO}");
-                    }
-                    
-                    if (enableDebugLogs)
-                        Debug.Log($"[TicTacToe] 🔄 About to update UI components...");
+                        Debug.Log($"[TicTacToe] LoadGameState: Status={gameState.gameStatus}, Turn={gameState.currentTurn}, Active={isGameActive}, MyTurn={isMyTurn}");
                     
                     // Ensure UI updates happen on main thread
                     if (UnityEngine.Application.isPlaying)
@@ -481,7 +462,7 @@ namespace MiniDB.Unity.Examples.TicTacToe
                         OnGameStateChanged?.Invoke(gameState);
                         
                         if (enableDebugLogs)
-                            Debug.Log($"[TicTacToe] ✅ UI components updated successfully");
+                            Debug.Log($"[TicTacToe] UI components updated");
                     }
                 }
             }
@@ -547,11 +528,11 @@ namespace MiniDB.Unity.Examples.TicTacToe
                 }
                 else if (winner == playerSymbol.ToString())
                 {
-                    statusMessage = "🎉 You won!";
+                    statusMessage = "You won!";
                 }
                 else
                 {
-                    statusMessage = "😔 You lost!";
+                    statusMessage = "You lost!";
                 }
                 
                 UpdateStatus(statusMessage);
@@ -696,7 +677,7 @@ namespace MiniDB.Unity.Examples.TicTacToe
             try
             {
                 if (enableDebugLogs)
-                    Debug.Log($"[TicTacToe] 📨 Received table notification: {notification}");
+                    Debug.Log($"[TicTacToe] Received table notification: {notification}");
                 
                 var jsonNotification = JObject.Parse(notification);
                 
@@ -737,30 +718,21 @@ namespace MiniDB.Unity.Examples.TicTacToe
                     
                     if (enableDebugLogs)
                     {
-                        Debug.Log($"[TicTacToe] 🔍 Full notification details:");
-                        Debug.Log($"[TicTacToe] - Updated Session ID: {updatedSessionId}");
-                        Debug.Log($"[TicTacToe] - Updated Game Status: {updatedGameStatus}");
-                        Debug.Log($"[TicTacToe] - Updated Player X: {updatedPlayerX}");
-                        Debug.Log($"[TicTacToe] - Updated Player O: {updatedPlayerO}");
-                        Debug.Log($"[TicTacToe] - Updated Current Turn: {updatedCurrentTurn}");
-                        Debug.Log($"[TicTacToe] - Our Session ID: {gameSessionId}");
-                        Debug.Log($"[TicTacToe] - Our Player ID: {playerId}");
-                        Debug.Log($"[TicTacToe] - Our Symbol: {playerSymbol}");
-                        Debug.Log($"[TicTacToe] - Current isGameActive: {isGameActive}");
-                        Debug.Log($"[TicTacToe] - Current isMyTurn: {isMyTurn}");
+                        Debug.Log($"[TicTacToe] Notification - Session: {updatedSessionId}, Status: {updatedGameStatus}");
+                        Debug.Log($"[TicTacToe] Players X: {updatedPlayerX}, O: {updatedPlayerO}, Turn: {updatedCurrentTurn}");
                     }
                     
                     // Only process updates for our current game
                     if (updatedSessionId == gameSessionId)
                     {
                         if (enableDebugLogs)
-                            Debug.Log("[TicTacToe] 🎮 Processing game update for our session - calling LoadGameState");
+                            Debug.Log("[TicTacToe] Processing game update for our session");
                         
                         // Use notification data directly if available (more reliable than re-querying)
                         if (!string.IsNullOrEmpty(updatedPlayerO) || !string.IsNullOrEmpty(updatedPlayerX))
                         {
                             if (enableDebugLogs)
-                                Debug.Log("[TicTacToe] 🔄 Using notification data to update game state directly");
+                                Debug.Log("[TicTacToe] Using notification data to update game state");
                             
                             // Update game state from notification data
                             gameState.gameStatus = updatedGameStatus ?? gameState.gameStatus;
@@ -782,7 +754,7 @@ namespace MiniDB.Unity.Examples.TicTacToe
                                         }
                                         
                                         if (enableDebugLogs)
-                                            Debug.Log($"[TicTacToe] 🔄 Board updated from notification: [{string.Join(",", gameState.board)}]");
+                                            Debug.Log($"[TicTacToe] Board updated: [{string.Join(",", gameState.board)}]");
                                     }
                                 }
                                 catch (JsonException ex)
@@ -803,15 +775,7 @@ namespace MiniDB.Unity.Examples.TicTacToe
                             OnGameStateChanged?.Invoke(gameState);
                             
                             if (enableDebugLogs)
-                            {
-                                Debug.Log($"[TicTacToe] ✅ Updated from notification:");
-                                Debug.Log($"[TicTacToe] - Game Status: {gameState.gameStatus}");
-                                Debug.Log($"[TicTacToe] - PlayerX: {gameState.playerX}");
-                                Debug.Log($"[TicTacToe] - PlayerO: {gameState.playerO}");
-                                Debug.Log($"[TicTacToe] - Current Turn: {gameState.currentTurn}");
-                                Debug.Log($"[TicTacToe] - isGameActive: {isGameActive}");
-                                Debug.Log($"[TicTacToe] - isMyTurn: {isMyTurn}");
-                            }
+                                Debug.Log($"[TicTacToe] Updated - Status: {gameState.gameStatus}, Turn: {gameState.currentTurn}, Active: {isGameActive}");
                         }
                         else
                         {
@@ -827,14 +791,14 @@ namespace MiniDB.Unity.Examples.TicTacToe
                                 if (gameState.gameStatus == "playing" && !string.IsNullOrEmpty(gameState.playerO))
                                 {
                                     if (enableDebugLogs)
-                                        Debug.Log($"[TicTacToe] ✅ LoadGameState succeeded on retry {retry + 1}");
+                                        Debug.Log($"[TicTacToe] LoadGameState succeeded on retry {retry + 1}");
                                     break;
                                 }
                                 
                                 if (retry < 2)
                                 {
                                     if (enableDebugLogs)
-                                        Debug.Log($"[TicTacToe] ⚠️ LoadGameState retry {retry + 1} - data still inconsistent, retrying...");
+                                        Debug.Log($"[TicTacToe] LoadGameState retry {retry + 1}");
                                     await Task.Delay(200);
                                 }
                             }
@@ -843,19 +807,19 @@ namespace MiniDB.Unity.Examples.TicTacToe
                     else
                     {
                         if (enableDebugLogs)
-                            Debug.Log("[TicTacToe] ⏸️ Ignoring notification for different session");
+                            Debug.Log("[TicTacToe] Ignoring notification for different session");
                     }
                 }
                 else
                 {
                     if (enableDebugLogs)
-                        Debug.Log($"[TicTacToe] ⏸️ Ignoring notification for table: {jsonNotification["table"]?.ToString()}");
+                        Debug.Log($"[TicTacToe] Ignoring notification for table: {jsonNotification["table"]?.ToString()}");
                 }
             }
             catch (Exception ex)
             {
                 if (enableDebugLogs)
-                    Debug.LogError($"[TicTacToe] ❌ Error processing table notification: {ex.Message}\nNotification: {notification}");
+                    Debug.LogError($"[TicTacToe] Error processing table notification: {ex.Message}\nNotification: {notification}");
             }
         }
         
