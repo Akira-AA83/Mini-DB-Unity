@@ -1,0 +1,37 @@
+{
+  "name": "com.minidb.unity.multiplayer",
+  "displayName": "MiniDB Unity Multiplayer",
+  "version": "1.0.0",
+  "description": "Unity multiplayer gaming package for MiniDB with real-time WebSocket integration. Provides <50ms latency networking for multiplayer games with plug-and-play setup.",
+  "unity": "2022.3",
+  "unityRelease": "0f1",
+  "author": {
+    "name": "MiniDB Team",
+    "email": "support@minidb.com"
+  },
+  "keywords": [
+    "multiplayer",
+    "networking",
+    "websocket",
+    "real-time",
+    "database",
+    "gaming"
+  ],
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "samples": [
+    {
+      "displayName": "Pong Multiplayer",
+      "description": "Simple Pong multiplayer game demonstrating core networking features",
+      "path": "Assets/Examples/PongMultiplayer"
+    },
+    {
+      "displayName": "Tic-Tac-Toe Multiplayer",
+      "description": "Turn-based Tic-Tac-Toe game with spectator mode",
+      "path": "Assets/Examples/TicTacToe"
+    }
+  ],
+  "type": "library",
+  "hideInEditor": false
+}

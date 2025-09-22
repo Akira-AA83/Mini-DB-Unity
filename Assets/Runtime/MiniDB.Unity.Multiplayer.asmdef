@@ -1,0 +1,19 @@
+{
+    "name": "MiniDB.Unity.Multiplayer",
+    "rootNamespace": "MiniDB.Unity.Multiplayer",
+    "references": [
+        "Unity.Netcode.Runtime",
+        "Unity.Collections",
+        "Unity.Mathematics",
+        "Unity.Burst"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
