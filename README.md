@@ -1,17 +1,19 @@
-# Mini-DB Unity Package
+# Mini-DB Unity Package v1.1.0
 
-**Real-time multiplayer Unity client for Mini-DB Server**
+**Real-time multiplayer Unity client for Mini-DB Server v0.4.0+**
 
-Connect your Unity games to Mini-DB Server for instant multiplayer experiences with WebSocket synchronization and server-side game logic.
+Connect your Unity games to Mini-DB Server for instant multiplayer experiences with WebSocket synchronization, flexible database routing, and server-side game logic.
 
 ## ✨ Features
 
-- **Real-time WebSocket connection** to Mini-DB Server
+- **Real-time WebSocket connection** to Mini-DB Server v0.4.0+
+- **Flexible server connections** - connect to gaming, e-commerce, or IoT databases  
 - **Async/await support** with Unity's main thread dispatcher
 - **Built-in game examples**: TicTacToe, Chat System, Multiplayer Pong
 - **Simple SQL-like queries** from Unity C#
 - **Automatic reconnection** and connection management
 - **Cross-platform** (PC, Mobile, WebGL)
+- **Compatible with custom server configurations**
 
 ## 🚀 Quick Start
 
@@ -49,7 +51,34 @@ public class GameManager : MonoBehaviour
 }
 ```
 
-### 3. Run Examples
+### 3. Server Connection Options
+
+Connect to different server configurations (requires Mini-DB Server v0.4.0+):
+
+```csharp
+// Gaming server (default port 8080)
+dbClient = new MiniDBSQLClient("ws://localhost:8080");
+
+// E-commerce server on different port  
+dbClient = new MiniDBSQLClient("ws://localhost:8081");
+
+// IoT server for sensor data
+dbClient = new MiniDBSQLClient("ws://localhost:8082");
+
+// Production server
+dbClient = new MiniDBSQLClient("ws://your-server.com:8080");
+```
+
+**Server Setup Examples:**
+```bash
+# Start gaming server (in Mini-DB Server directory)
+cargo run -- --db gaming.db --config gaming_modules.toml --port 8080
+
+# Start e-commerce server  
+cargo run -- --db shop.db --config ecommerce_modules.toml --port 8081
+```
+
+### 4. Run Examples
 
 The package includes complete multiplayer examples:
 

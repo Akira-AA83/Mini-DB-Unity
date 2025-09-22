@@ -1,8 +1,8 @@
 {
   "name": "com.minidb.unity.multiplayer",
   "displayName": "MiniDB Unity Multiplayer",
-  "version": "1.0.0",
-  "description": "Unity multiplayer gaming package for MiniDB with real-time WebSocket integration. Provides <50ms latency networking for multiplayer games with plug-and-play setup.",
+  "version": "1.1.0",
+  "description": "Unity multiplayer gaming package for MiniDB v0.4.0+ with flexible database routing and real-time WebSocket integration. Provides <50ms latency networking for multiplayer games with plug-and-play setup.",
   "unity": "2022.3",
   "unityRelease": "0f1",
   "author": {
